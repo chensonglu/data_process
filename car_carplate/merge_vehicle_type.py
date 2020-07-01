@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding=utf-8 -*-
 
-# 将xml中车辆的26种中文type变成6种英文type
+# 将xml中车辆的20多种中文type替换成6种英文type，保持原始的珠海标注格式不变
  
 from xml.etree.ElementTree import ElementTree,Element
 import os

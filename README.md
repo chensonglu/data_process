@@ -1,2 +1,4 @@
 # data_process
-car_carplate/merge_vehicle_type.py: 将xml中车辆的26种中文type变成6种英文type
+car_carplate/merge_vehicle_type.py: 将xml中车辆的20多种中文type替换成6种英文type，保持原始的珠海标注格式不变
+car_carplate/car_carplate_to_VOC.py: 将车或车牌当做独立的目标从珠海标注的格式转换为VOC的xml格式
+car_carplate/car_carplate_offset_to_VOC.py: 将车辆、车辆是否包含车牌、车辆与车牌中心偏移以及车牌尺寸从珠海标注的格式转换为VOC的xml格式
