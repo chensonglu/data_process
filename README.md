@@ -1,1 +1,2 @@
 # data_process
+car_carplate/merge_vehicle_type.py: 将xml中车辆的26种中文type变成6种英文type
