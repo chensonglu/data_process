@@ -1,4 +1,6 @@
 # 将FTP上的多级文件合并到day和night文件夹里，并且重命名
+
+
 import shutil
 import os
 
