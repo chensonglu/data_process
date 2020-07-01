@@ -10,8 +10,8 @@ import sys
 sys.path.append(".")
 import shared_function as ex
 
-root_dir = r'C:\Users\chens\Desktop\20171214\720p\Annotations'
-target_dir = r'C:\Users\chens\Desktop\20171214\720p\car_carplate'
+root_dir = r'C:\Users\chens\Desktop\20171214_20180203\720p\Annotations'
+target_dir = r'C:\Users\chens\Desktop\20171214_20180203\720p\car_carplate'
 
 # 是否需要车
 need_car = True
