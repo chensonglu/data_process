@@ -14,6 +14,6 @@ for scene_path in p.iterdir():
     images_per_scene = list(scene_path.glob('*.jpg'))
     images_per_scene.sort()
     for i, image_path in enumerate(images_per_scene):
-        unique_filename = os.path.join(image_path.parent.name, '_', image_path.stem)
+        unique_filename = image_path.parent.name + '_' + image_path.stem
         output_image_path = Path(output_dir).joinpath(Path(unique_filename + '.jpg'))
         shutil.copy(str(image_path), str(output_image_path))
