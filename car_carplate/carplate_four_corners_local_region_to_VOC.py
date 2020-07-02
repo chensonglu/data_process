@@ -12,14 +12,14 @@ import sys
 sys.path.append(".")
 import shared_function as ex
 
-root_xmls = r'C:\Users\chens\Desktop\20171214\720p\Annotations'
-root_imgs = r'C:\Users\chens\Desktop\20171214\720p\JPEGImages'
+root_xmls = r'C:\Users\chens\Desktop\20171214_20180203\720p\Annotations'
+root_imgs = r'C:\Users\chens\Desktop\20171214_20180203\720p\JPEGImages'
 
-target_xmls = r'C:\Users\chens\Desktop\20171214\720p\carplate_four_corners_local_region\Annotations'
-target_imgs = r'C:\Users\chens\Desktop\20171214\720p\carplate_four_corners_local_region\JPEGImages'
+target_xmls = r'C:\Users\chens\Desktop\20171214_20180203\720p\carplate_four_corners_local_region\Annotations'
+target_imgs = r'C:\Users\chens\Desktop\20171214_20180203\720p\carplate_four_corners_local_region\JPEGImages'
 
-root_imagesets = r'C:\Users\chens\Desktop\20171214\720p\ImageSets\Main'
-target_imagesets = r'C:\Users\chens\Desktop\20171214\720p\carplate_four_corners_local_region\ImageSets\Main'
+root_imagesets = r'C:\Users\chens\Desktop\20171214_20180203\720p\ImageSets\Main'
+target_imagesets = r'C:\Users\chens\Desktop\20171214_20180203\720p\carplate_four_corners_local_region\ImageSets\Main'
 
 expand_num = 6
 
@@ -51,12 +51,11 @@ def expand_carplate(fileitem, n):
         car_ymax = ex.limit_in_bounds(car_ymax, 1, height)
 
         # 003786.xml是一辆车两个车牌
-        try:
-            carplates = obj.getElementsByTagName('carplate')
-        except:
+        carplates = obj.getElementsByTagName('carplate')
+        if len(carplates) == 0:
             continue
         else:
-            # 如果只有一个车牌的情况
+            # 如果只有一个车牌的情况，多于一个车牌直接跳过，不然容易造成干扰
             if len(carplates) == 1:
                 carplate = carplates[0]
                 carplate_x_top_left = round(
@@ -103,8 +102,8 @@ def expand_carplate(fileitem, n):
                 carplate_xmax = max(carplate_x_bottom_right, carplate_x_top_right)
                 carplate_ymax = max(carplate_y_bottom_right, carplate_y_bottom_left)
 
-                carplate_width = carplate_xmax - carplate_xmin + 1
-                carplate_height = carplate_ymax - carplate_ymin + 1
+                carplate_width = carplate_xmax - carplate_xmin
+                carplate_height = carplate_ymax - carplate_ymin
 
                 for x in range(1, expand_num+1):
                     print("generate NO. " + str(x) + "'s data.")
@@ -153,9 +152,9 @@ def expand_carplate(fileitem, n):
                     size = doc.createElement('size')
                     annotation.appendChild(size)
                     width_ = doc.createElement('width')
-                    width_.appendChild(doc.createTextNode(str(roi_xmax - roi_xmin + 1)))
+                    width_.appendChild(doc.createTextNode(str(roi_xmax - roi_xmin)))
                     height_ = doc.createElement('height')
-                    height_.appendChild(doc.createTextNode(str(roi_ymax - roi_ymin + 1)))
+                    height_.appendChild(doc.createTextNode(str(roi_ymax - roi_ymin)))
                     depth_ = doc.createElement('depth')
                     depth_.appendChild(doc.createTextNode(str(depth)))
                     size.appendChild(width_)
@@ -237,112 +236,8 @@ def expand_carplate(fileitem, n):
                     doc.writexml(fp, indent='\t', addindent='\t', newl='\n', encoding="utf-8")
                     # save image
                     img = cv2.imread(os.path.join(root_imgs, fileitem.split('.')[0] + '.jpg'))
-                    roi = img[roi_ymin:roi_ymax + 1, roi_xmin:roi_xmax + 1, :]
+                    roi = img[roi_ymin:roi_ymax, roi_xmin:roi_xmax, :]
                     cv2.imwrite(os.path.join(target_imgs, fileitem.split('.')[0] + '_' + str(index + 1) + '_' + str(x) + '.jpg'), roi)
-
-            # # 如果有两个车牌
-            # for i in range(len(carplates)):
-            #     carplate = carplates[i]
-            #     carplate_x_top_left = round(float(carplate.getElementsByTagName('x_top_left')[0].childNodes[0].nodeValue))
-            #     carplate_y_top_left = round(float(carplate.getElementsByTagName('y_top_left')[0].childNodes[0].nodeValue))
-            #     carplate_x_top_right = round(float(carplate.getElementsByTagName('x_top_right')[0].childNodes[0].nodeValue))
-            #     carplate_y_top_right = round(float(carplate.getElementsByTagName('y_top_right')[0].childNodes[0].nodeValue))
-            #     carplate_x_bottom_right = round(float(carplate.getElementsByTagName('x_bottom_right')[0].childNodes[0].nodeValue))
-            #     carplate_y_bottom_right = round(float(carplate.getElementsByTagName('y_bottom_right')[0].childNodes[0].nodeValue))
-            #     carplate_x_bottom_left = round(float(carplate.getElementsByTagName('x_bottom_left')[0].childNodes[0].nodeValue))
-            #     carplate_y_bottom_left = round(float(carplate.getElementsByTagName('y_bottom_left')[0].childNodes[0].nodeValue))
-            #
-            #     # 将车牌四点顺序改为标准的左上右上右下左下
-            #     results = ex.exchange_four_points_to_std([carplate_x_top_left, carplate_y_top_left, carplate_x_top_right, carplate_y_top_right,
-            #                                  carplate_x_bottom_right, carplate_y_bottom_right, carplate_x_bottom_left, carplate_y_bottom_left])
-            #     carplate_x_top_left = results['x_top_left']
-            #     carplate_y_top_left = results['y_top_left']
-            #     carplate_x_top_right = results['x_top_right']
-            #     carplate_y_top_right = results['y_top_right']
-            #     carplate_x_bottom_right = results['x_bottom_right']
-            #     carplate_y_bottom_right = results['y_bottom_right']
-            #     carplate_x_bottom_left = results['x_bottom_left']
-            #     carplate_y_bottom_left = results['y_bottom_left']
-            #     # 限制不超过图片上下界
-            #     carplate_x_top_left = ex.limit_in_bounds(carplate_x_top_left, 1, width)
-            #     carplate_y_top_left = ex.limit_in_bounds(carplate_y_top_left, 1, height)
-            #     carplate_x_top_right = ex.limit_in_bounds(carplate_x_top_right, 1, width)
-            #     carplate_y_top_right = ex.limit_in_bounds(carplate_y_top_right, 1, height)
-            #     carplate_x_bottom_right = ex.limit_in_bounds(carplate_x_bottom_right, 1, width)
-            #     carplate_y_bottom_right = ex.limit_in_bounds(carplate_y_bottom_right, 1, height)
-            #     carplate_x_bottom_left = ex.limit_in_bounds(carplate_x_bottom_left, 1, width)
-            #     carplate_y_bottom_left = ex.limit_in_bounds(carplate_y_bottom_left, 1, height)
-            #
-            #     carplate_xmin = min(carplate_x_top_left, carplate_x_bottom_left)
-            #     carplate_ymin = min(carplate_y_top_left, carplate_y_top_right)
-            #     carplate_xmax = max(carplate_x_bottom_right, carplate_x_top_right)
-            #     carplate_ymax = max(carplate_y_bottom_right, carplate_y_bottom_left)
-            #
-            #     IsOccluded = int(carplate.getElementsByTagName('occlusion')[0].childNodes[0].nodeValue)
-            #     IsDifficult = int(carplate.getElementsByTagName('difficult')[0].childNodes[0].nodeValue)
-            #
-            #     # carplate
-            #     object = doc.createElement('object')
-            #     annotation.appendChild(object)
-            #     name = doc.createElement('name')
-            #     name.appendChild(doc.createTextNode("carplate"))
-            #     object.appendChild(name)
-            #     # pose
-            #     pose_ = doc.createElement('pose')
-            #     pose_.appendChild(doc.createTextNode('Unspecified'))
-            #     object.appendChild(pose_)
-            #     # occluded
-            #     occluded_ = doc.createElement('occluded')
-            #     occluded_.appendChild(doc.createTextNode(str(IsOccluded)))
-            #     object.appendChild(occluded_)
-            #     # truncated
-            #     truncated_ = doc.createElement('truncated')
-            #     truncated_.appendChild(doc.createTextNode(str(0)))
-            #     object.appendChild(truncated_)
-            #     # difficult
-            #     difficult_ = doc.createElement('difficult')
-            #     difficult_.appendChild(doc.createTextNode(str(IsDifficult)))
-            #     object.appendChild(difficult_)
-            #     # the bndbox
-            #     bndbox = doc.createElement('bndbox')
-            #     object.appendChild(bndbox)
-            #     xmin_ = doc.createElement('xmin')
-            #     xmin_.appendChild(doc.createTextNode(str(carplate_xmin)))
-            #     bndbox.appendChild(xmin_)
-            #     ymin_ = doc.createElement('ymin')
-            #     ymin_.appendChild(doc.createTextNode(str(carplate_ymin)))
-            #     bndbox.appendChild(ymin_)
-            #     xmax_ = doc.createElement('xmax')
-            #     xmax_.appendChild(doc.createTextNode(str(carplate_xmax)))
-            #     bndbox.appendChild(xmax_)
-            #     ymax_ = doc.createElement('ymax')
-            #     ymax_.appendChild(doc.createTextNode(str(carplate_ymax)))
-            #     bndbox.appendChild(ymax_)
-            #
-            #     x_top_left_ = doc.createElement('x_top_left')
-            #     x_top_left_.appendChild(doc.createTextNode(str(carplate_x_top_left)))
-            #     bndbox.appendChild(x_top_left_)
-            #     y_top_left_ = doc.createElement('y_top_left')
-            #     y_top_left_.appendChild(doc.createTextNode(str(carplate_y_top_left)))
-            #     bndbox.appendChild(y_top_left_)
-            #     x_top_right_ = doc.createElement('x_top_right')
-            #     x_top_right_.appendChild(doc.createTextNode(str(carplate_x_top_right)))
-            #     bndbox.appendChild(x_top_right_)
-            #     y_top_right_ = doc.createElement('y_top_right')
-            #     y_top_right_.appendChild(doc.createTextNode(str(carplate_y_top_right)))
-            #     bndbox.appendChild(y_top_right_)
-            #     x_bottom_right_ = doc.createElement('x_bottom_right')
-            #     x_bottom_right_.appendChild(doc.createTextNode(str(carplate_x_bottom_right)))
-            #     bndbox.appendChild(x_bottom_right_)
-            #     y_bottom_right_ = doc.createElement('y_bottom_right')
-            #     y_bottom_right_.appendChild(doc.createTextNode(str(carplate_y_bottom_right)))
-            #     bndbox.appendChild(y_bottom_right_)
-            #     x_bottom_left_ = doc.createElement('x_bottom_left')
-            #     x_bottom_left_.appendChild(doc.createTextNode(str(carplate_x_bottom_left)))
-            #     bndbox.appendChild(x_bottom_left_)
-            #     y_bottom_left_ = doc.createElement('y_bottom_left')
-            #     y_bottom_left_.appendChild(doc.createTextNode(str(carplate_y_bottom_left)))
-            #     bndbox.appendChild(y_bottom_left_)
 
 
 file_list = os.listdir(root_xmls)
@@ -350,6 +245,7 @@ for fileitem in file_list:
     if fileitem.endswith('xml'):
         print(fileitem)
         expand_carplate(fileitem, 3)
+
 
 for dataset in ['test.txt', 'train.txt', 'trainval.txt', 'val.txt']:
     dataset_path = os.path.join(root_imagesets, dataset)
@@ -361,7 +257,7 @@ for dataset in ['test.txt', 'train.txt', 'trainval.txt', 'val.txt']:
     for line in lines:
         for fileitem in file_list:
             fileitem_split = fileitem.strip().split("_")
-            # 这里是因为有些图片名字本身带着下划线
+            # 这里是因为有些图片名字本身带着下划线，用名字前半部分与txt中匹配，如果包含则写入新的数据集分布
             if (len(fileitem_split) == 3 and line.strip() == fileitem_split[0]) or (len(fileitem_split) == 4 and line.strip() == fileitem_split[0] + '_' + fileitem_split[1]):
                 fi_1.write(fileitem.strip().split(".")[0] + '\n')
     fi_1.close()

@@ -12,8 +12,8 @@ importlib.reload(sys)
 sys.path.append(".")
 import shared_function as ex
 
-root_dir = r'C:\Users\chens\Desktop\20171214\720p\Annotations'
-target_dir = r'C:\Users\chens\Desktop\20171214\720p\car_carplate_offset'
+root_dir = r'C:\Users\chens\Desktop\20171214_20180203\720p\Annotations'
+target_dir = r'C:\Users\chens\Desktop\20171214_20180203\720p\car_carplate_offset'
 
 
 def gen_car_carplate_offset(fileitem):
@@ -91,10 +91,7 @@ def gen_car_carplate_offset(fileitem):
             car_y_center = (car_ymin + car_ymax) / 2
 
             # carplate
-            try:
-                carplates = obj.getElementsByTagName('carplate')
-            except:
-                continue
+            carplates = obj.getElementsByTagName('carplate')
 
             if len(carplates) == 0:
                 num_car_without_carplate += 1
@@ -255,10 +252,10 @@ def gen_car_carplate_offset(fileitem):
 
                     # carplate size and offset
                     width_ = doc.createElement('width')
-                    width_.appendChild(doc.createTextNode(str(carplate_xmax - carplate_xmin + 1)))
+                    width_.appendChild(doc.createTextNode(str(carplate_xmax - carplate_xmin)))
                     bndbox.appendChild(width_)
                     height_ = doc.createElement('height')
-                    height_.appendChild(doc.createTextNode(str(carplate_ymax - carplate_ymin + 1)))
+                    height_.appendChild(doc.createTextNode(str(carplate_ymax - carplate_ymin)))
                     bndbox.appendChild(height_)
                     x_offset_ = doc.createElement('x_offset')
                     x_offset_.appendChild(doc.createTextNode(str(carplate_x_center - car_x_center)))

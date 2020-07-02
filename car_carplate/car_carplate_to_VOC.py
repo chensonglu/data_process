@@ -11,12 +11,12 @@ sys.path.append(".")
 import shared_function as ex
 
 root_dir = r'C:\Users\chens\Desktop\20171214_20180203\720p\Annotations'
-target_dir = r'C:\Users\chens\Desktop\20171214_20180203\720p\car_carplate'
+target_dir = r'C:\Users\chens\Desktop\20171214_20180203\720p\car'
 
 # 是否需要车
 need_car = True
 # 是否需要车牌
-need_carplate = True
+need_carplate = False
 
 
 def gen_car_and_carplate_independently(fileitem):
@@ -131,9 +131,8 @@ def gen_car_and_carplate_independently(fileitem):
 
         # 003786.xml是一辆车两个车牌
         if need_carplate:
-            try:
-                carplates = obj.getElementsByTagName('carplate')
-            except:
+            carplates = obj.getElementsByTagName('carplate')
+            if len(carplates) == 0:
                 continue
             else:
                 for i in range(len(carplates)):

@@ -164,10 +164,10 @@ def gen_car_and_carplate_two_stage_end2end(dic):
 
     # carplate size and offset
     width_ = doc.createElement('width')
-    width_.appendChild(doc.createTextNode(str(carplate_xmax - carplate_xmin + 1)))
+    width_.appendChild(doc.createTextNode(str(carplate_xmax - carplate_xmin)))
     bndbox.appendChild(width_)
     height_ = doc.createElement('height')
-    height_.appendChild(doc.createTextNode(str(carplate_ymax - carplate_ymin + 1)))
+    height_.appendChild(doc.createTextNode(str(carplate_ymax - carplate_ymin)))
     bndbox.appendChild(height_)
     x_offset_ = doc.createElement('x_offset')
     x_offset_.appendChild(doc.createTextNode(str(carplate_x_center - car_x_center)))

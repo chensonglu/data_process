@@ -10,5 +10,9 @@ car_carplate/car_carplate_two_stage_e2e_to_VOC.py: 生成从粗到精端到端�
 car_carplate/show_car_carplate_labelImg.py: 用于同时展示珠海标注中的车辆和车牌
 car_carplate/show_car_carplate_VOC.py: 用于同时展示转换后VOC格式中的车辆和车牌
 car_carplate/car_carplate_statistics.py: 根据VOC的xml统计车辆和车牌的数量，包括被遮挡和截断的数量
+car_carplate/carplate_in_car_to_VOC.py: 将图片中车辆抠出来，并获取其中车牌相对车辆的位置，并根据数据集划分情况将新生成的数据集进行划分，从珠海标注的格式转换为VOC的xml格式
+car_carplate/ImageSets/Main/*.txt: 按照7:1:2的比例生成的训练、验证和测试集
 
 VOC_to_YOLO.py: VOC格式转为YOLO格式，包括车辆或车牌
+shared_function.py: 包含其他数据处理程序共享的功能
+gen-ImageSetsMain.py: 随机生成训练、验证和测试集
