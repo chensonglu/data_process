@@ -16,4 +16,4 @@ for scene_path in p.iterdir():
     for i, image_path in enumerate(images_per_scene):
         unique_filename = os.path.join(image_path.parent.name, '_', image_path.stem)
         output_image_path = Path(output_dir).joinpath(Path(unique_filename + '.jpg'))
-        shutil.copy(image_path, output_image_path)
+        shutil.copy(str(image_path), (output_image_path))
