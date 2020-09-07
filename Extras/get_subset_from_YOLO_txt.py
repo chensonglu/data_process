@@ -4,10 +4,10 @@
 import os
 import shutil
 
-root_dir = '/dataset/egohands_data/images'
-root_file = '/dataset/egohands_data/test.txt'
+root_dir = '/dataset/ZHhands/labels'
+root_file = '/dataset/ZHhands/test.txt'
 
-target_dir = '/dataset/egohands_data/quantization_set'
+target_dir = '/dataset/ZHhands/quantization_set'
 
 fi = open(root_file)
 lines = fi.readlines()

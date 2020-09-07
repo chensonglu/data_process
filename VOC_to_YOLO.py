@@ -7,10 +7,10 @@ from os import getcwd
 import shutil
 
 sets = ['train', 'val', 'test', 'trainval']
-classes = ['car']
+classes = ['0', '1', '2', '3', '4', '5', '6', '7', '8']
 
-os.chdir(r'C:\Users\chens\Desktop\20171214_20180203\720p\car')
-targe_dir = r'C:\Users\chens\Desktop\20171214_20180203\720p'
+os.chdir('/dataset/ZHhands')
+targe_dir = '/dataset/ZHhands'
 
 def convert(size, box):
     dw = 1./(size[0])
@@ -35,7 +35,7 @@ def convert_annotation(image_id):
     h = int(size.find('height').text)
 
     for obj in root.iter('object'):
-        difficult = obj.find('difficult').text
+        # difficult = obj.find('difficult').text
         cls = obj.find('name').text
         # if cls not in classes or int(difficult)==1:
         if cls not in classes:
@@ -62,4 +62,4 @@ for image_set in sets:
 for s in sets:
     shutil.move(s + '.txt', os.path.join(targe_dir, s + '.txt'))
 # 移动label文件
-shutil.move('labels', os.path.join(targe_dir, 'labels'))
+# shutil.move('labels', os.path.join(targe_dir, 'labels'))

@@ -3,9 +3,9 @@
 import os
 import random
 
-os.chdir(r'C:\Users\chens\Desktop\20171214_20180203\720p\carplate')
+os.chdir('/dataset/ZHhands')
 
-trainval_percent = 0.8
+trainval_percent = 0.95
 train_percent = 0.7
 xmlfilepath = 'Annotations'
 txtsavepath = 'ImageSets/Main'
