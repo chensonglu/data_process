@@ -5,7 +5,7 @@ import random
 
 os.chdir('/dataset/ZHhands')
 
-trainval_percent = 0.95
+trainval_percent = 0.9
 train_percent = 0.7
 xmlfilepath = 'Annotations'
 txtsavepath = 'ImageSets/Main'
