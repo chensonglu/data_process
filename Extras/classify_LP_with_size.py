@@ -84,7 +84,7 @@ def gen_carplate_size(fileitem):
         roi = img[carplate_ymin:carplate_ymax, carplate_xmin:carplate_xmax, :]
         if h <= 16:
             cv2.imwrite(os.path.join(target_img_dir + 'small', fileitem.split('.')[0] + '_' + str(index + 1) + '.jpg'), roi)
-        elif h > 16 and h <= 22:
+        elif h > 16 and h <= 32:
             cv2.imwrite(os.path.join(target_img_dir + 'medium', fileitem.split('.')[0] + '_' + str(index + 1) + '.jpg'), roi)
         else:
             cv2.imwrite(os.path.join(target_img_dir + 'large', fileitem.split('.')[0] + '_' + str(index + 1) + '.jpg'), roi)
