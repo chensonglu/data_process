@@ -11,10 +11,11 @@ import sys
 sys.path.append(".")
 import shared_function as ex
 
-root_xml_dir = '/data/TILT/1080p/carplate_only/Annotations/'
-root_img_dir = '/data/TILT/1080p/carplate_only/JPEGImages/'
+root_xml_dir = '/data/TILT/720p/carplate_only/Annotations/'
+root_xml_txt = '/data/TILT/720p/carplate_only/ImageSets/Main/test.txt'
+root_img_dir = '/data/TILT/720p/carplate_only/JPEGImages/'
 
-target_img_dir = '/data/TILT/1080p/carplate_size/'
+target_img_dir = '/data/TILT/720p/carplate_size/'
 
 shutil.rmtree(os.path.join(target_img_dir, 'small'))
 shutil.rmtree(os.path.join(target_img_dir, 'medium'))
@@ -90,8 +91,8 @@ def gen_carplate_size(fileitem):
             cv2.imwrite(os.path.join(target_img_dir + 'large', fileitem.split('.')[0] + '_' + str(index + 1) + '.jpg'), roi)
 
 
-file_list = os.listdir(root_xml_dir)
-for fileitem in file_list:
-    if fileitem.endswith('xml'):
-        print(fileitem)
-        gen_carplate_size(fileitem)
+fi = open(root_xml_txt)
+lines = fi.readlines()
+for line in lines:
+    print(line)
+    gen_carplate_size(line.strip() + '.xml')
