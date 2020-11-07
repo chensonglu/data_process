@@ -11,7 +11,7 @@ lines = fi.readlines()
 print(len(lines))
 fi.close()
 
-l = [randint(0, len(lines)-1) for i in range(3000)]
+l = [randint(0, len(lines)-1) for i in range(5000)]
 
 fi = open('/data/CCPD/VOC/ImageSets/Main/test.txt', 'w')
 for idx in l:
