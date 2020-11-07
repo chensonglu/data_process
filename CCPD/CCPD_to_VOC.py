@@ -17,8 +17,11 @@ target_dir = '/data/CCPD/VOC/Annotations'
 
 def CCPD_to_VOC(fileitem):
     # image info
-    img = cv2.imread(os.path.join(root_dir, fileitem))
-    height, width, depth = img.shape
+    # img = cv2.imread(os.path.join(root_dir, fileitem))
+    # height, width, depth = img.shape
+    height = 1160
+    width = 720
+    depth = 3
 
     # check image size
     if height != 1160 or width != 720:
