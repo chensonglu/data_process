@@ -197,4 +197,4 @@ lines = fi.readlines()
 for idx, line in enumerate(lines):
     if idx % 5000 == 0:
         print(idx)
-    CCPD_to_VOC(line.strip())
+    CCPD_to_VOC(line.strip() + '.jpg')
