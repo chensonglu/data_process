@@ -7,14 +7,14 @@ import cv2
 import glob
 from xml.dom import minidom
 
-img_root_dir = 'C:\\Users\\chens\\Desktop\\20171214\\720p\\JPEGImages\\'
-xml_root_dir = 'C:\\Users\\chens\\Desktop\\20171214\\720p\\car_carplate\\'
+img_root_dir = '/data/CCPD/VOC/JPEGImages/'
+xml_root_dir = '/data/CCPD/VOC/Annotations/'
 xmls = os.listdir(xml_root_dir)
 num = len(glob.glob(xml_root_dir +"*.xml"))
 print(num)
 
 for i, xml_ in enumerate(xmls):
-    if i % 1 != 0:
+    if i % 100 != 0:
         continue
     # if xml_ != '003918_2_2.xml':
     #     continue
@@ -44,8 +44,8 @@ for i, xml_ in enumerate(xmls):
             xmax = bndbox.getElementsByTagName('xmax')[0].childNodes[0].nodeValue
             ymax = bndbox.getElementsByTagName('ymax')[0].childNodes[0].nodeValue
 
-            # cv2.rectangle(img, (round(float(xmin)), round(float(ymin))), (round(float(xmax)), round(float(ymax))),
-            #               (0, 255, 0), 2)
+            cv2.rectangle(img, (round(float(xmin)), round(float(ymin))), (round(float(xmax)), round(float(ymax))),
+                          (0, 255, 0), 2)
 
             try:
                 x_top_left = round(float(bndbox.getElementsByTagName('x_top_left')[0].childNodes[0].nodeValue))
