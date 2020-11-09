@@ -1,8 +1,7 @@
-# 从CCPD的验证集随机选取3000张作为训练时的验证集,以防99996张验证速度太慢
+# 从CCPD的验证集随机不重复选取5000张作为训练时的验证集,以防99996张验证速度太慢
 
 
 import random
-from random import randint
 
 random.seed(10)
 
@@ -11,7 +10,7 @@ lines = fi.readlines()
 print(len(lines))
 fi.close()
 
-l = [randint(0, len(lines)-1) for i in range(5000)]
+l = random.sample(range(len(lines)), 5000)
 
 fi = open('/data/CCPD/VOC/ImageSets/Main/test.txt', 'w')
 for idx in l:
