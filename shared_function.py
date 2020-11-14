@@ -71,7 +71,7 @@ def exchange_four_points_to_std(coor):
     # 这种情况下说明车牌倾斜较大,有一条对角线垂直于横坐标,最好还是人工修改下标注,程序很难判断
     # 其实可以根据非垂直对角线的角度进行判断,太麻烦了,分三种情况(1-3象限,2-4象限以及与x轴重合),也没有太大必要
     if len(left_points)==3 and len(right_points)==3:
-        assert "车牌倾斜很大,有一条对角线垂直于横坐标,需要人工修改标注"
+        assert False, "车牌倾斜很大,有一条对角线垂直于横坐标,需要人工修改标注"
 
     # 其次四点确定后符合特定的关系
     assert x_top_left < x_top_right, "x_top_right should large than x_top_left"
