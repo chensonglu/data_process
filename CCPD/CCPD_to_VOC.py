@@ -10,9 +10,9 @@ import sys
 sys.path.append(".")
 import shared_function as ex
 
-root_dir = '/dataset/CCPD/CCPD2019/ccpd_base'
-root_txt_dir = '/data/CCPD/VOC/ImageSets/Main/trainval.txt'
-target_dir = '/data/CCPD/VOC/Annotations'
+root_dir = '/dataset/CCPD/CCPD2019/ccpd_all_test'
+root_txt_dir = '/data/CCPD/test/ccpd_all_test/ImageSets/Main/test.txt'
+target_dir = '/data/CCPD/test/ccpd_all_test/Annotations'
 
 
 def CCPD_to_VOC(fileitem):
