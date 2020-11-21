@@ -1,9 +1,4 @@
-import glob
-import xml.etree.ElementTree as ET
 import numpy as np
-
-ANNOTATIONS_PATH = "/data/CCPD/VOC/Annotations"
-CLUSTERS = 6
 
 
 def iou(box, clusters):
@@ -27,6 +22,27 @@ def iou(box, clusters):
     return iou_
 
 
+def iou_loc(box, clusters):
+    """
+    Calculates the Intersection over Union (IoU) between a box and k clusters considering the location.
+    :param box: tuple or array, not shifted to the origin (i. e. width and height)
+    :param clusters: numpy array of shape (k, 2) where k is the number of distributed clusters
+    :return: numpy array of shape (k, 0) where k is the number of distributed clusters
+    """
+    xmin = np.maximum(clusters[:, 0], box[0])
+    ymin = np.maximum(clusters[:, 1], box[1])
+    xmax = np.minimum(clusters[:, 2], box[2])
+    ymax = np.minimum(clusters[:, 3], box[3])
+
+    intersection = np.maximum(xmax - xmin, 0) * np.maximum(ymax - ymin, 0)
+    box_area = (box[2] - box[0]) * (box[3] - box[1])
+    cluster_area = (clusters[:, 2] - clusters[:, 0]) * (clusters[:, 3] - clusters[:, 1])
+
+    iou_ = intersection / (box_area + cluster_area - intersection)
+
+    return iou_
+
+
 def avg_iou(boxes, clusters):
     """
     Calculates the average Intersection over Union (IoU) between a numpy array of boxes and k clusters.
@@ -35,6 +51,16 @@ def avg_iou(boxes, clusters):
     :return: average IoU as a single float
     """
     return np.mean([np.max(iou(boxes[i], clusters)) for i in range(boxes.shape[0])])
+
+
+def spt_iou(boxes, clusters):
+    """
+    Calculates the average Intersection over Union (IoU) between a numpy array of boxes and k clusters considering the location.
+    :param boxes: numpy array of shape (r, 2), where r is the number of rows
+    :param clusters: numpy array of shape (k, 2) where k is the number of distributed clusters
+    :return: spatial IoU as a single float
+    """
+    return np.mean([np.max(iou_loc(boxes[i], clusters)) for i in range(boxes.shape[0])])
 
 
 def translate_boxes(boxes):
@@ -83,39 +109,3 @@ def kmeans(boxes, k, dist=np.median):
         last_clusters = nearest_clusters
 
     return clusters
-
-
-def load_dataset(path):
-	dataset = []
-	for xml_file in glob.glob("{}/*xml".format(path)):
-		tree = ET.parse(xml_file)
-
-		height = int(tree.findtext("./size/height"))
-		width = int(tree.findtext("./size/width"))
-
-		for obj in tree.iter("object"):
-			xmin = int(obj.findtext("bndbox/xmin")) / width
-			ymin = int(obj.findtext("bndbox/ymin")) / height
-			xmax = int(obj.findtext("bndbox/xmax")) / width
-			ymax = int(obj.findtext("bndbox/ymax")) / height
-
-			dataset.append([xmax - xmin, ymax - ymin])
-
-	return np.array(dataset)
-
-
-data = load_dataset(ANNOTATIONS_PATH)
-out = kmeans(data, k=CLUSTERS)
-print("Accuracy: {:.2f}%".format(avg_iou(data, out) * 100))
-print("Boxes:\n {}".format(out))
-
-ratios = np.around(out[:, 0] / out[:, 1], decimals=2).tolist()
-print("Ratios:\n {}".format(sorted(ratios)))
-print("Sorted Ratios:\n {}".format(sorted(ratios)))
-
-areas = np.around(out[:, 0] * out[:, 1], decimals=6).tolist()
-print("Areas:\n {}".format(areas))
-area_order = np.argsort(areas)
-print("Sorted Areas:\n {}".format(sorted(areas)))
-print("Sorted Boxes:\n {}".format(out[area_order]))
-
