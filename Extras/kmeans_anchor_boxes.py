@@ -63,7 +63,7 @@ def kmeans(boxes, k, dist=np.median):
     distances = np.empty((rows, k))
     last_clusters = np.zeros((rows,))
 
-    np.random.seed()
+    np.random.seed(10)
 
     # the Forgy method will fail if the whole array contains the same rows
     clusters = boxes[np.random.choice(rows, k, replace=False)]
@@ -111,53 +111,11 @@ print("Boxes:\n {}".format(out))
 
 ratios = np.around(out[:, 0] / out[:, 1], decimals=2).tolist()
 print("Ratios:\n {}".format(sorted(ratios)))
+print("Sorted Ratios:\n {}".format(sorted(ratios)))
 
-input = np.array([512, 512])
-print("Sizes with input 512*512:\n {}".format(out*input))
+areas = np.around(out[:, 0] * out[:, 1], decimals=6).tolist()
+print("Areas:\n {}".format(areas))
+area_order = np.argsort(areas)
+print("Sorted Areas:\n {}".format(sorted(areas)))
+print("Sorted Boxes:\n {}".format(out[area_order]))
 
-input = np.array([300, 300])
-print("Sizes with input 300*300:\n {}".format(out*input))
-
-# Accuracy: 82.23%
-# Boxes:
-#  [[0.4375     0.11896552]
-#  [0.37638889 0.08965517]
-#  [0.24166667 0.05603448]
-#  [0.31111111 0.07155172]]
-# Ratios:
-#  [3.68, 4.2, 4.31, 4.35]
-# Sizes with input 512*512:
-#  [[224.          60.91034483]
-#  [192.71111111  45.90344828]
-#  [123.73333333  28.68965517]
-#  [159.28888889  36.63448276]]
-# Sizes with input 300*300:
-#  [[131.25        35.68965517]
-#  [112.91666667  26.89655172]
-#  [ 72.5         16.81034483]
-#  [ 93.33333333  21.46551724]]
-
-# Accuracy: 85.00%
-# Boxes:
-#  [[0.46805556 0.125     ]
-#  [0.425      0.09396552]
-#  [0.2375     0.05517241]
-#  [0.35555556 0.07931034]
-#  [0.33055556 0.10948276]
-#  [0.29444444 0.06982759]]
-# Ratios:
-#  [3.02, 3.74, 4.22, 4.3, 4.48, 4.52]
-# Sizes with input 512*512:
-#  [[239.64444444  64.        ]
-#  [217.6         48.11034483]
-#  [121.6         28.24827586]
-#  [182.04444444  40.60689655]
-#  [169.24444444  56.05517241]
-#  [150.75555556  35.75172414]]
-# Sizes with input 300*300:
-#  [[140.41666667  37.5       ]
-#  [127.5         28.18965517]
-#  [ 71.25        16.55172414]
-#  [106.66666667  23.79310345]
-#  [ 99.16666667  32.84482759]
-#  [ 88.33333333  20.94827586]]
