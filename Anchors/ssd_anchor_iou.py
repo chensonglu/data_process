@@ -8,6 +8,7 @@ from kmeans import avg_iou, spt_iou
 cfg = {
     'min_dim': 300,
     'feature_maps': [38, 19, 10, 5, 3, 1],
+    'steps': [8, 16, 32, 64, 100, 300],
     'min_sizes': [30.0, 60.0, 111.0, 162.0, 213.0, 264.0],
     'max_sizes': [60.0, 111.0, 162.0, 213.0, 264.0, 315.0],
     'aspect_ratios': [[2], [2, 3], [2, 3], [2, 3], [2], [2]],
@@ -18,6 +19,7 @@ cfg = {
 def change_cfg_for_ssd512(cfg):
     cfg['min_dim'] = 512
     cfg['feature_maps'] = [64, 32, 16, 8, 4, 2, 1]
+    cfg['steps'] = [8, 16, 32, 64, 128, 256, 512]
     cfg['min_sizes'] = [35.84, 76.8, 153.6, 230.4, 307.2, 384.0, 460.8]
     cfg['max_sizes'] = [76.8, 153.6, 230.4, 307.2, 384.0, 460.8, 537.6]
     cfg['aspect_ratios']= [[2], [2, 3], [2, 3], [2, 3], [2, 3], [2], [2]]
@@ -51,7 +53,7 @@ def load_dataset(path):
 
     return np.array(dataset), np.array(dataset_loc)
 
-ANNOTATIONS_PATH = "/data/TILT/720p/carplate_only/Annotations"
+ANNOTATIONS_PATH = "/data/CCPD/VOC/Annotations_val"
 data, data_loc = load_dataset(ANNOTATIONS_PATH)
 
 for s in [300, 512]:
@@ -85,7 +87,7 @@ for s in [300, 512]:
     anchors_loc = []
     for k, f in enumerate(cfg['feature_maps']):
         for i, j in product(range(f), repeat=2):
-            f_k = cfg['feature_maps'][k]
+            f_k = cfg['min_dim'] / cfg['steps'][k]
             # unit center x,y
             cx = (j + 0.5) / f_k
             cy = (i + 0.5) / f_k

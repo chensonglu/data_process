@@ -3,8 +3,8 @@ import xml.etree.ElementTree as ET
 import numpy as np
 from kmeans import kmeans, avg_iou
 
-ANNOTATIONS_PATH = "/data/TILT/720p/carplate_only/Annotations"
-CLUSTERS = 6
+ANNOTATIONS_PATH = "/data/CCPD/VOC/Annotations_train"
+CLUSTERS = 4
 
 
 def load_dataset(path):
@@ -29,14 +29,9 @@ def load_dataset(path):
 data = load_dataset(ANNOTATIONS_PATH)
 out = kmeans(data, k=CLUSTERS)
 print("Accuracy: {:.2f}%".format(avg_iou(data, out) * 100))
-# print("Boxes:\n {}".format(out))
-
 ratios = np.around(out[:, 0] / out[:, 1], decimals=2).tolist()
-# print("Ratios:\n {}".format(sorted(ratios)))
 print("Sorted Ratios:\n {}".format(sorted(ratios)))
-
 areas = np.around(out[:, 0] * out[:, 1], decimals=6).tolist()
-# print("Areas:\n {}".format(areas))
 area_order = np.argsort(areas)
 print("Sorted Areas:\n {}".format(sorted(areas)))
 print("Sorted Boxes:\n {}".format(out[area_order]))
