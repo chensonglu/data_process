@@ -3,9 +3,6 @@ import xml.etree.ElementTree as ET
 import numpy as np
 from kmeans import kmeans, avg_iou
 
-ANNOTATIONS_PATH = "/data/CCPD/VOC/Annotations_train"
-CLUSTERS = 4
-
 
 def load_dataset(path):
 	dataset = []
@@ -26,12 +23,15 @@ def load_dataset(path):
 	return np.array(dataset)
 
 
+ANNOTATIONS_PATH = "/data/CCPD/VOC/Annotations_train"
 data = load_dataset(ANNOTATIONS_PATH)
-out = kmeans(data, k=CLUSTERS)
-print("Accuracy: {:.2f}%".format(avg_iou(data, out) * 100))
-ratios = np.around(out[:, 0] / out[:, 1], decimals=2).tolist()
-print("Sorted Ratios:\n {}".format(sorted(ratios)))
-areas = np.around(out[:, 0] * out[:, 1], decimals=6).tolist()
-area_order = np.argsort(areas)
-print("Sorted Areas:\n {}".format(sorted(areas)))
-print("Sorted Boxes:\n {}".format(out[area_order]))
+
+for CLUSTERS in [4, 6]:
+	out = kmeans(data, k=CLUSTERS)
+	print("Accuracy: {:.2f}%".format(avg_iou(data, out) * 100))
+	ratios = np.around(out[:, 0] / out[:, 1], decimals=2).tolist()
+	print("Sorted Ratios:\n {}".format(sorted(ratios)))
+	areas = np.around(out[:, 0] * out[:, 1], decimals=6).tolist()
+	area_order = np.argsort(areas)
+	print("Sorted Areas:\n {}".format(sorted(areas)))
+	print("Sorted Boxes:\n {}".format(out[area_order]))
