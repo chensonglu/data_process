@@ -6,10 +6,10 @@ import pickle
 import math
 
 def forward(x):
-    return np.power(x, 3/4)
+    return np.log(20.0*x+1.0)
 
 def inverse(x):
-    return np.power(x, 4/3)
+    return (np.exp(x)-1.0)/20.0
 
 model_list = ['carplate_bbox_weights_ssd512_40000.pth',
               'carplate_only_four_corners_weights_ssd512_40000.pth',
@@ -44,26 +44,26 @@ for model_idx, model in enumerate(model_list):
             F1_score = []
             for i in range(2, 12):
                 F1_score.append(0.0 if lines[i].strip().split(' ')[-1] == 'nan' else float(lines[i].strip().split(' ')[-1]))
-            avg_F1 = 0.0 if lines[12].strip().split(' ')[-1] == 'nan' else float(lines[12].strip().split(' ')[-1])
             num_dic['F1_score'] = F1_score
-            num_dic['avg_F1'] = avg_F1
+            num_dic['avg_F1'] = np.mean(np.array(F1_score))
             set_dic[test_set] = num_dic
         elif  model in model_list_4 and model in lines[0]:
             F1_score = []
             for i in range(3, 13):
                 F1_score.append(0.0 if lines[i].strip().split(' ')[-1] == 'nan' else float(lines[i].strip().split(' ')[-1]))
-            avg_F1 = 0.0 if lines[12].strip().split(' ')[-1] == 'nan' else float(lines[13].strip().split(' ')[-1])
             num_dic['F1_score'] = F1_score
-            num_dic['avg_F1'] = avg_F1
+            num_dic['avg_F1'] = np.mean(np.array(F1_score))
             set_dic[test_set] = num_dic
     model_dic[model] = set_dic
+# print(model_dic)
 
 # ax.set_yscale('function', functions=(forward, inverse))
 plt.figure(figsize=(21, 3))
 for idx, test_set in enumerate(set_list):
     ax = plt.subplot(1, 7, idx+1)
     ax.set_xscale('logit')
-    ax.set_yscale('linear')
+    # ax.set_yscale('linear')
+    ax.set_yscale('function', functions=(forward, inverse))
     xmajorLocator = MultipleLocator(0.1)
     # xminorLocator = MultipleLocator(0.05)
     xmajorFormatter = FormatStrFormatter('%2.1f')
@@ -77,7 +77,7 @@ for idx, test_set in enumerate(set_list):
     for i, model in enumerate(model_list):
         color = plt.rcParams['axes.prop_cycle'].by_key()['color'][i-1]
         F1_score = np.array(model_dic[model][test_set]['F1_score'])[:]
-        ax.plot(np.array(IoU_thres_list)[:], F1_score**(1/4), 'o-', linewidth=1, ms=2, color=color)
+        ax.plot(np.array(IoU_thres_list)[:], F1_score, 'o-', linewidth=1, ms=2, color=color)
     plt.grid(linestyle='--')
     plt.xlabel('IoU')
     if idx == 0:
@@ -137,7 +137,7 @@ for idx, test_set in enumerate(set_list):
     ax.xaxis.set_minor_formatter(plt.NullFormatter())
     ax.yaxis.set_minor_locator(plt.NullLocator())
     ax.yaxis.set_minor_formatter(plt.NullFormatter())
-    ax.set_yticks([0.1, 0.3, 0.5, 1.0])
+    ax.set_yticks([0.1, 0.2, 0.3, 0.5, 1.0])
     for i, model in enumerate(model_list):
         color = plt.rcParams['axes.prop_cycle'].by_key()['color'][i-1]
         F1_score = np.array(model_dic[model][test_set]['ap'])[:]
