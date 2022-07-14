@@ -34,14 +34,14 @@ def CCPD_to_VOC(fileitem):
         print("wrong four corners")
         print(fileitem)
 
-    carplate_x_bottom_right = int(four_corners.split('_')[0].split('&')[0])
-    carplate_y_bottom_right = int(four_corners.split('_')[0].split('&')[1])
-    carplate_x_bottom_left = int(four_corners.split('_')[1].split('&')[0])
-    carplate_y_bottom_left = int(four_corners.split('_')[1].split('&')[1])
-    carplate_x_top_left = int(four_corners.split('_')[2].split('&')[0])
-    carplate_y_top_left = int(four_corners.split('_')[2].split('&')[1])
-    carplate_x_top_right = int(four_corners.split('_')[3].split('&')[0])
-    carplate_y_top_right = int(four_corners.split('_')[3].split('&')[1])
+    carplate_x_bottom_right = int(four_corners.split('_')[0].split('&')[0]) + 1
+    carplate_y_bottom_right = int(four_corners.split('_')[0].split('&')[1]) + 1
+    carplate_x_bottom_left = int(four_corners.split('_')[1].split('&')[0]) + 1
+    carplate_y_bottom_left = int(four_corners.split('_')[1].split('&')[1]) + 1
+    carplate_x_top_left = int(four_corners.split('_')[2].split('&')[0]) + 1
+    carplate_y_top_left = int(four_corners.split('_')[2].split('&')[1]) + 1
+    carplate_x_top_right = int(four_corners.split('_')[3].split('&')[0]) + 1
+    carplate_y_top_right = int(four_corners.split('_')[3].split('&')[1]) + 1
 
     # 将车牌四点顺序改为标准的左上右上右下左下
     results = ex.exchange_four_points_to_std([carplate_x_top_left, carplate_y_top_left, carplate_x_top_right, carplate_y_top_right,
