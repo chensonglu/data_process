@@ -1,7 +1,6 @@
 # 将CLPD的文件名变成VOC格式的xml
 import os
 import cv2
-import xml.dom.minidom
 from xml.dom.minidom import Document
 import csv
 
@@ -12,7 +11,8 @@ import shared_function as ex
 csv_file = csv.DictReader(open('/home/yzbj/dataset/CLPD/CLPD.csv', 'r', encoding='gbk'))
 img_path = '/home/yzbj/dataset/CLPD/CLPD_1200'
 target_dir = '/home/yzbj/data/CLPD/VOC/Annotations'
-test_path = '/home/yzbj/data/CLPD/VOC/ImageSets/Main/test.txt'
+# test_path = '/home/yzbj/data/CLPD/VOC/ImageSets/Main/test.txt'
+# gt_path = '/home/yzbj/data/CLPD/result/CLPD_gt.txt'
 
 
 # 将图片中车和车牌的信息读到字典中
@@ -37,6 +37,7 @@ def pars_dic(key, value):
     dic['height'] = height
     dic['width'] = width
     dic['channel'] = channel
+    dic['label'] = value['label']
     dic['carplate_x_top_left'] = value['x1']
     dic['carplate_y_top_left'] = value['y1']
     dic['carplate_x_top_right'] = value['x2']
@@ -55,14 +56,14 @@ def CLPD_to_VOC(dic):
     height = int(dic['height'])
     channel = dic['channel']
 
-    carplate_x_top_left = int(dic['carplate_x_top_left'])
-    carplate_y_top_left = int(dic['carplate_y_top_left'])
-    carplate_x_top_right = int(dic['carplate_x_top_right'])
-    carplate_y_top_right = int(dic['carplate_y_top_right'])
-    carplate_x_bottom_right = int(dic['carplate_x_bottom_right'])
-    carplate_y_bottom_right = int(dic['carplate_y_bottom_right'])
-    carplate_x_bottom_left = int(dic['carplate_x_bottom_left'])
-    carplate_y_bottom_left = int(dic['carplate_y_bottom_left'])
+    carplate_x_top_left = int(dic['carplate_x_top_left']) + 1
+    carplate_y_top_left = int(dic['carplate_y_top_left']) + 1
+    carplate_x_top_right = int(dic['carplate_x_top_right']) + 1
+    carplate_y_top_right = int(dic['carplate_y_top_right']) + 1
+    carplate_x_bottom_right = int(dic['carplate_x_bottom_right']) + 1
+    carplate_y_bottom_right = int(dic['carplate_y_bottom_right']) + 1
+    carplate_x_bottom_left = int(dic['carplate_x_bottom_left']) + 1
+    carplate_y_bottom_left = int(dic['carplate_y_bottom_left']) + 1
     
     # 将车牌四点顺序改为标准的左上右上右下左下
     results = ex.exchange_four_points_to_std([carplate_x_top_left, carplate_y_top_left, carplate_x_top_right, carplate_y_top_right,
@@ -149,6 +150,10 @@ def CLPD_to_VOC(dic):
     difficult_ = doc.createElement('difficult')
     difficult_.appendChild(doc.createTextNode(str(0)))
     object.appendChild(difficult_)
+    # number
+    number_ = doc.createElement('number')
+    number_.appendChild(doc.createTextNode(dic['label']))
+    object.appendChild(number_)
     # the bndbox
     bndbox = doc.createElement('bndbox')
     object.appendChild(bndbox)
@@ -194,9 +199,13 @@ def CLPD_to_VOC(dic):
     fp = open(os.path.join(target_dir, img_name[:-4] + ".xml"), 'w')
     doc.writexml(fp, indent='\t', addindent='\t', newl='\n', encoding="utf-8")
     # save test txt
-    fin = open(test_path, 'a+')
-    fin.write(img_name[:-4] + '\n')
-    fin.close()
+    # fin = open(test_path, 'a+')
+    # fin.write(img_name[:-4] + '\n')
+    # fin.close()
+    # save gt
+    # fin = open(gt_path, 'a+')
+    # fin.write(img_name + ' ' + dic['label'] + '\n')
+    # fin.close()
 
 
 dics = read_to_dic()
