@@ -12,17 +12,21 @@ def inverse(x):
     return (np.exp(x)-1.0)/20.0
 
 model_list = ['carplate_bbox_weights_ssd512_40000.pth',
-              'carplate_only_four_corners_weights_ssd512_40000.pth',
+              'carplate_bbox_with_CIoU_loss_weights_16_ssd512_55000.pth',
+            #   'carplate_only_four_corners_weights_ssd512_40000.pth',
               'carplate_bbox_four_corners_weights_ssd512_35000.pth',
-              'carplate_bbox_four_corners_with_CIoU_loss_weights_16_ssd512_50000.pth',
-              'carplate_only_four_corners_with_CIoU_loss_weights_16_ssd512_50000.pth']
+            #   'carplate_bbox_four_corners_with_CIoU_loss_weights_16_ssd512_50000.pth',
+              'carplate_only_four_corners_with_CIoU_loss_weights_16_ssd512_50000.pth',
+              'carplate_only_four_corners_with_CIoU_loss_weights_5_recognition_ssd512_45000.pth']
 model_list_2 = ['carplate_bbox_weights_ssd512_40000.pth',
-                'carplate_only_four_corners_weights_ssd512_40000.pth',
-                'carplate_only_four_corners_with_CIoU_loss_weights_16_ssd512_50000.pth']
-model_list_4 = ['carplate_bbox_four_corners_weights_ssd512_35000.pth',
-                'carplate_bbox_four_corners_with_CIoU_loss_weights_16_ssd512_50000.pth']
+                'carplate_bbox_with_CIoU_loss_weights_16_ssd512_55000.pth',
+                # 'carplate_only_four_corners_weights_ssd512_40000.pth',
+                'carplate_only_four_corners_with_CIoU_loss_weights_16_ssd512_50000.pth',
+                'carplate_only_four_corners_with_CIoU_loss_weights_5_recognition_ssd512_45000.pth']
+model_list_4 = ['carplate_bbox_four_corners_weights_ssd512_35000.pth']
+                # 'carplate_bbox_four_corners_with_CIoU_loss_weights_16_ssd512_50000.pth']
 set_list = ['ccpd_all_test', 'ccpd_db', 'ccpd_blur', 'ccpd_fn', 'ccpd_rotate',  'ccpd_tilt', 'ccpd_challenge']
-set_show_list = ['All', 'DB', 'Blur', 'FN', 'Rotate', 'Tilt', 'Challenge']
+set_show_list = ['Avg', 'DB', 'Blur', 'FN', 'Rotate', 'Tilt', 'Challenge']
 IoU_thres_list = [0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95]
 log_root = '/code/ssd.pytorch/log/CCPD_6set_allset_coco'
 
@@ -55,10 +59,10 @@ for model_idx, model in enumerate(model_list):
             num_dic['avg_F1'] = np.mean(np.array(F1_score))
             set_dic[test_set] = num_dic
     model_dic[model] = set_dic
-# print(model_dic)
+print(model_dic)
 
 # ax.set_yscale('function', functions=(forward, inverse))
-plt.figure(figsize=(21, 3))
+plt.figure(figsize=(21, 4))
 for idx, test_set in enumerate(set_list):
     ax = plt.subplot(1, 7, idx+1)
     ax.set_xscale('logit')
@@ -75,16 +79,20 @@ for idx, test_set in enumerate(set_list):
     ax.yaxis.set_minor_locator(plt.NullLocator())
     ax.yaxis.set_minor_formatter(plt.NullFormatter())
     for i, model in enumerate(model_list):
-        color = plt.rcParams['axes.prop_cycle'].by_key()['color'][i-1]
+        if i > 1:
+            color = plt.rcParams['axes.prop_cycle'].by_key()['color'][i-1]
+        else:
+            color = plt.rcParams['axes.prop_cycle'].by_key()['color'][-3*i-1]
         F1_score = np.array(model_dic[model][test_set]['F1_score'])[:]
         ax.plot(np.array(IoU_thres_list)[:], F1_score, 'o-', linewidth=1, ms=2, color=color)
     plt.grid(linestyle='--')
-    plt.xlabel('IoU')
-    if idx == 0:
-        plt.ylabel('F1-score')
+    plt.xlabel('IoU', fontsize=13)
+    # if idx == 0 or idx == 1 or idx == 4:
+    plt.ylabel('F1-score', fontsize=13)
+    plt.tick_params(labelsize=12)
     plt.title(set_show_list[idx])
     if idx == 0:
-        ax.legend(['BB', 'FC', 'BB+FC', 'BB+FC+CIoU', 'FC+CIoU'], handletextpad=0.5, labelspacing=0.3, fontsize=9)
+        ax.legend(['BB', 'BB(CIoU)', 'BB+FV', 'FV+CIoU', 'FV+CIoU(E2E)'], handletextpad=0.5, labelspacing=0.3, fontsize=12)
 plt.tight_layout()
 # plt.subplots_adjust(hspace=0)
 # plt.margins(0, 0)
@@ -117,7 +125,7 @@ for model_idx, model in enumerate(model_list):
                 set_dic[test_set] = num_dic
                     
     model_dic[model] = set_dic
-
+print(model_dic)
 plt.figure(figsize=(21, 3))
 for idx, test_set in enumerate(set_list):
     ax = plt.subplot(1, 7, idx+1)
@@ -144,11 +152,11 @@ for idx, test_set in enumerate(set_list):
         ax.plot(np.array(IoU_thres_list)[:], F1_score, 'o-', linewidth=1, ms=2, color=color)
     plt.grid(linestyle='--')
     plt.xlabel('IoU')
-    if idx == 0:
-        plt.ylabel('AP')
+    # if idx == 0 or idx == 1 or idx == 4:
+    plt.ylabel('AP')
     plt.title(set_show_list[idx])
     if idx == 0:
-        ax.legend(['BB', 'FC', 'BB+FC', 'BB+FC+CIoU', 'FC+CIoU'], handletextpad=0.5, labelspacing=0.3, fontsize=9)
+        ax.legend(['BB', 'BB(CIoU)', 'BB+FV', 'FV+CIoU', 'FV+CIoU+E2E'], handletextpad=0.5, labelspacing=0.3, fontsize=9)
 plt.tight_layout()
 # plt.subplots_adjust(hspace=0)
 # plt.margins(0, 0)
