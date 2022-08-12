@@ -1,6 +1,4 @@
 # 将CCPD的文件名变成VOC格式的xml
-
-
 import os
 import cv2
 import xml.dom.minidom
@@ -10,9 +8,15 @@ import sys
 sys.path.append(".")
 import shared_function as ex
 
-root_dir = '/dataset/CCPD/CCPD2019/ccpd_all_test'
-root_txt_dir = '/data/CCPD/test/ccpd_all_test/ImageSets/Main/test.txt'
-target_dir = '/data/CCPD/test/ccpd_all_test/Annotations'
+provinces = ["皖", "沪", "津", "渝", "冀", "晋", "蒙", "辽", "吉", "黑", "苏", "浙", "京", "闽", "赣", "鲁", "豫", "鄂", "湘", "粤", "桂", "琼", "川", "贵", "云", "藏", "陕", "甘", "青", "宁", "新", "警", "学", "O"]
+alphabets = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'J', 'K', 'L', 'M', 'N', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W',
+             'X', 'Y', 'Z', 'O']
+ads = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'J', 'K', 'L', 'M', 'N', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X',
+       'Y', 'Z', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'O']
+
+root_dir = '/home/yzbj/data/CCPDdevkit/VOC/JPEGImages'
+# root_txt_dir = '/data/CCPD/test/ccpd_all_test/ImageSets/Main/test.txt'
+target_dir = '/home/yzbj/data/CCPDdevkit/VOC/Annotations'
 
 
 def CCPD_to_VOC(fileitem):
@@ -33,6 +37,17 @@ def CCPD_to_VOC(fileitem):
     if len(four_corners.split('_')) != 4:
         print("wrong four corners")
         print(fileitem)
+
+    # number
+    imgname = ''
+    numbers = fileitem.strip().split('-')[-3]
+    province = provinces[int(numbers.split('_')[0])]
+    imgname = imgname + province
+    alphabet = alphabets[int(numbers.split('_')[1])]
+    imgname = imgname + alphabet
+    for i in range(5):
+        ad = ads[int(numbers.split('_')[i+2])]
+        imgname = imgname + ad
 
     carplate_x_bottom_right = int(four_corners.split('_')[0].split('&')[0]) + 1
     carplate_y_bottom_right = int(four_corners.split('_')[0].split('&')[1]) + 1
@@ -146,6 +161,10 @@ def CCPD_to_VOC(fileitem):
     difficult_ = doc.createElement('difficult')
     difficult_.appendChild(doc.createTextNode(str(0)))
     object.appendChild(difficult_)
+    # number
+    number_ = doc.createElement('number')
+    number_.appendChild(doc.createTextNode(str(imgname)))
+    object.appendChild(number_)
     # the bndbox
     bndbox = doc.createElement('bndbox')
     object.appendChild(bndbox)
@@ -192,9 +211,11 @@ def CCPD_to_VOC(fileitem):
     doc.writexml(fp, indent='\t', addindent='\t', newl='\n', encoding="utf-8")
 
 
-fi = open(root_txt_dir)
-lines = fi.readlines()
+# fi = open(root_txt_dir)
+# lines = fi.readlines()
+lines = os.listdir(root_dir)
 for idx, line in enumerate(lines):
     if idx % 5000 == 0:
         print(idx)
-    CCPD_to_VOC(line.strip() + '.jpg')
+    # CCPD_to_VOC(line.strip() + '.jpg')
+    CCPD_to_VOC(line.strip())
