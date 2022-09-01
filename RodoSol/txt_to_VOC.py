@@ -15,7 +15,10 @@ test_txt = '/home/yzbj/data/RodoSol/VOC/ImageSets/Main/test.txt'
 fr = open(split_txt, 'r')
 lines = fr.readlines()
 fr.close()
-for line in lines:
+for idx, line in enumerate(lines):
+    if idx%1000 == 0:
+        print(idx)
+
     if line.strip().split(';')[-1] == 'training':
         fr = open(trainval_txt, 'a+')
         fr.write(line.strip().split(';')[0].split('/')[-1].split('.')[0] + '\n')
@@ -33,6 +36,7 @@ for line in lines:
     fr = open(label_txt, 'r')
     labels = fr.readlines()
     fr.close()
+    number = labels[1].strip().split(':')[1].strip()
     corners = labels[3]
 
     img_name = line.strip().split(';')[0].split('/')[-1]
@@ -40,15 +44,19 @@ for line in lines:
     height = 720
     channel = 3
 
-    carplate_x_top_left = int(corners.strip().split(':')[1].strip().split(' ')[0].split(',')[0])
-    carplate_y_top_left = int(corners.strip().split(':')[1].strip().split(' ')[0].split(',')[1])
-    carplate_x_top_right = int(corners.strip().split(':')[1].strip().split(' ')[1].split(',')[0])
-    carplate_y_top_right = int(corners.strip().split(':')[1].strip().split(' ')[1].split(',')[1])
-    carplate_x_bottom_right = int(corners.strip().split(':')[1].strip().split(' ')[2].split(',')[0])
-    carplate_y_bottom_right = int(corners.strip().split(':')[1].strip().split(' ')[2].split(',')[1])
-    carplate_x_bottom_left = int(corners.strip().split(':')[1].strip().split(' ')[3].split(',')[0])
-    carplate_y_bottom_left = int(corners.strip().split(':')[1].strip().split(' ')[3].split(',')[1])
+    carplate_x_top_left = int(corners.strip().split(':')[1].strip().split(' ')[0].split(',')[0]) + 1
+    carplate_y_top_left = int(corners.strip().split(':')[1].strip().split(' ')[0].split(',')[1]) + 1
+    carplate_x_top_right = int(corners.strip().split(':')[1].strip().split(' ')[1].split(',')[0]) + 1
+    carplate_y_top_right = int(corners.strip().split(':')[1].strip().split(' ')[1].split(',')[1]) + 1
+    carplate_x_bottom_right = int(corners.strip().split(':')[1].strip().split(' ')[2].split(',')[0]) + 1
+    carplate_y_bottom_right = int(corners.strip().split(':')[1].strip().split(' ')[2].split(',')[1]) + 1
+    carplate_x_bottom_left = int(corners.strip().split(':')[1].strip().split(' ')[3].split(',')[0]) + 1
+    carplate_y_bottom_left = int(corners.strip().split(':')[1].strip().split(' ')[3].split(',')[1]) + 1
     
+    # if carplate_x_top_left < 1 or carplate_y_top_left < 1 or carplate_x_top_right < 1 or carplate_y_top_right < 1 \
+    #     or carplate_x_bottom_right < 1 or carplate_y_bottom_right < 1 or carplate_x_bottom_left < 1 or carplate_y_bottom_left < 1:
+    #     print('line: ', line)
+
     # 将车牌四点顺序改为标准的左上右上右下左下
     results = ex.exchange_four_points_to_std([carplate_x_top_left, carplate_y_top_left, carplate_x_top_right, carplate_y_top_right,
                                     carplate_x_bottom_right, carplate_y_bottom_right, carplate_x_bottom_left, carplate_y_bottom_left])
@@ -134,6 +142,10 @@ for line in lines:
     difficult_ = doc.createElement('difficult')
     difficult_.appendChild(doc.createTextNode(str(0)))
     object.appendChild(difficult_)
+    # number
+    number_ = doc.createElement('number')
+    number_.appendChild(doc.createTextNode(str(number)))
+    object.appendChild(number_)
     # the bndbox
     bndbox = doc.createElement('bndbox')
     object.appendChild(bndbox)
