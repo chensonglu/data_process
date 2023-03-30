@@ -1,6 +1,4 @@
 # 将CCPD中的图片按照GT切割出来,保存为未水平矫正和水平矫正两个版本
-
-
 import os
 import cv2
 import xml.dom.minidom
@@ -50,14 +48,14 @@ def crop_rectify_GT(fileitem):
     carplate_x_bottom_left = results['x_bottom_left']
     carplate_y_bottom_left = results['y_bottom_left']
     # 限制不超过图片上下界
-    carplate_x_top_left = ex.limit_in_bounds(carplate_x_top_left, 1, width)
-    carplate_y_top_left = ex.limit_in_bounds(carplate_y_top_left, 1, height)
-    carplate_x_top_right = ex.limit_in_bounds(carplate_x_top_right, 1, width)
-    carplate_y_top_right = ex.limit_in_bounds(carplate_y_top_right, 1, height)
-    carplate_x_bottom_right = ex.limit_in_bounds(carplate_x_bottom_right, 1, width)
-    carplate_y_bottom_right = ex.limit_in_bounds(carplate_y_bottom_right, 1, height)
-    carplate_x_bottom_left = ex.limit_in_bounds(carplate_x_bottom_left, 1, width)
-    carplate_y_bottom_left = ex.limit_in_bounds(carplate_y_bottom_left, 1, height)
+    carplate_x_top_left = ex.limit_in_bounds(carplate_x_top_left, 0, width-1)
+    carplate_y_top_left = ex.limit_in_bounds(carplate_y_top_left, 0, height-1)
+    carplate_x_top_right = ex.limit_in_bounds(carplate_x_top_right, 0, width-1)
+    carplate_y_top_right = ex.limit_in_bounds(carplate_y_top_right, 0, height-1)
+    carplate_x_bottom_right = ex.limit_in_bounds(carplate_x_bottom_right, 0, width-1)
+    carplate_y_bottom_right = ex.limit_in_bounds(carplate_y_bottom_right, 0, height-1)
+    carplate_x_bottom_left = ex.limit_in_bounds(carplate_x_bottom_left, 0, width-1)
+    carplate_y_bottom_left = ex.limit_in_bounds(carplate_y_bottom_left, 0, height-1)
 
     # bbox
     carplate_xmin = min(carplate_x_top_left, carplate_x_bottom_left)
